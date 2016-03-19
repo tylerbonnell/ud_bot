@@ -25,7 +25,7 @@ def bot_reply(c):
 def main():
     username, password = open("login.txt").read().split('\n')
     r = praw.Reddit("Urban Dictionary Bot by /u/officialdovahkiin")
-    r.login(username, password)
+    r.login(username, password, disable_warning=True)
 
     for c in praw.helpers.comment_stream(r, 'all'):
         if wants_def(c):
