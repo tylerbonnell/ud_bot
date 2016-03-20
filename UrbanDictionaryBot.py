@@ -14,22 +14,26 @@ def wants_def(c):
     for ln in lines:
         ln = ln.strip()
         if ln[:len(start)] == start:
-            words.insert(len(words), ln[len(start):])
+            words.insert(len(words), ln[len(start):].strip())
     if len(words) > 0:
         return words
     else:
         return None
 
 def bot_reply(c, words):
+    reply = ""
     for ln in words:
-        print ln
-        term = "yeltsin"
-        term = term.replace(" ", "%20")
+        term = ln.replace(" ", "%20")
         req = json.load(urllib2.urlopen("http://api.urbandictionary.com/v0/define?term=" + term))["list"]
-        #if len(req) > 0:
-            #print req[0]
-        #else:
-            #print "No results found!"
+        reply += "[**" + ln + "**](https://www.urbandictionary.com/define.php?term=" + term + ")\n\n"
+        if len(req) > 0:
+            defn = req[0]
+            reply += defn["definition"] + '\n\n*' + defn["example"] + '*\n\n'
+        else:
+            reply += "No definitions found! How about you [submit one](https://www.urbandictionary.com/?modal_url=%2Fadd.modal.php)?\n\n"
+        reply += "---\n"
+    reply += "^(I'm a bot! Check out /r/ud_bot for info.)"
+    c.reply(reply)
 
 def main():
     username, password = open("login.txt").read().split('\n')
